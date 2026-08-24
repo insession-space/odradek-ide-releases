@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session Desk — 走らせたエージェントを、取りこぼさない。</title>
+<meta name="description" content="Claude Code のバックグラウンドジョブを1枚の台帳に並べ、返事待ち・停止・未コミットを自動で拾い上げる macOS アプリ。気づいたその場で端末に入って、続きをやる。">
+<meta property="og:title" content="Session Desk">
+<meta property="og:description" content="走らせたエージェントを、取りこぼさない。Claude Code のバックグラウンドジョブを見張る macOS アプリ。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://insession-space.github.io/session-desk-releases/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' rx='7' fill='none' stroke='%23ffb454' stroke-width='2'/%3E%3Cg stroke='%23ffb454' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M10 12h12' opacity='1'/%3E%3Cpath d='M10 16h12' opacity='.55'/%3E%3Cpath d='M10 20h12' opacity='.3'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#070a0f;
+  --text:#f4f7fa; --muted:#a7b4c2; --faint:#6f7d8c;
+  --accent:#ffb454; --onAccent:#241804;
+  --urgent:#ff7b72; --warn:#e4c15c; --ok:#7ee2a8; --info:#79b8e8;
+  --sans:"IBM Plex Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --pad:96px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:#ffcd8a}
+h1,h2,h3,p,ul{margin:0}
+h1,h2,h3{font-family:var(--sans);font-weight:500;letter-spacing:.005em}
+h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
+.mono{font-family:var(--mono)}
+.eyebrow{font-size:12.5px;letter-spacing:.16em;color:var(--faint);font-family:var(--mono);text-transform:uppercase}
+.lead{font-size:15.5px;line-height:1.95;color:var(--muted)}
+.sec-title{font-size:30px;line-height:1.6}
+.wrap{position:relative;max-width:1440px;margin:0 auto}
+.glass{
+  background:linear-gradient(165deg,rgba(255,255,255,.062),rgba(255,255,255,.028) 46%,rgba(255,255,255,.04));
+  backdrop-filter:blur(30px) saturate(140%);-webkit-backdrop-filter:blur(30px) saturate(140%);
+  border:1px solid rgba(255,255,255,.16);border-radius:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 18px 44px rgba(0,0,0,.42);
+}
+.glass-soft{background:rgba(255,255,255,.045);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+  border:1px solid rgba(255,255,255,.10);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+/* macOS のシステムボタンに寄せる */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(180deg,#ffc978,var(--accent) 52%,#f3a441);color:var(--onAccent);font-weight:600;
+  border-radius:7px;border:1px solid rgba(0,0,0,.28);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.10),0 1px 2px rgba(0,0,0,.40);
+  text-shadow:0 1px 0 rgba(255,255,255,.28);padding:15px 26px;font-size:16px}
+.btn:hover{color:var(--onAccent);filter:brightness(1.06)}
+.btn:active{filter:brightness(.94)}
+.btn-ghost{display:inline-flex;align-items:center;gap:9px;color:var(--text);
+  background:linear-gradient(180deg,rgba(255,255,255,.20),rgba(255,255,255,.10));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(0,0,0,.30);border-radius:7px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 1px 2px rgba(0,0,0,.35);padding:15px 24px;font-size:15px}
+.btn-ghost:hover{color:var(--text);background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.13))}
+.btn-sm{padding:10px 20px;font-size:14px}
+/* 背後の光 */
+.light{position:absolute;border-radius:50%;filter:blur(50px);pointer-events:none;z-index:0}
+.l1{top:-260px;right:-180px;width:980px;height:820px;background:radial-gradient(circle,rgba(255,180,84,.34),transparent 66%)}
+.l2{top:1450px;left:-320px;width:940px;height:880px;background:radial-gradient(circle,rgba(121,184,232,.18),transparent 66%)}
+.l3{top:3150px;right:-240px;width:900px;height:820px;background:radial-gradient(circle,rgba(255,180,84,.16),transparent 66%)}
+.content{position:relative;z-index:1}
+.section{padding:0 var(--pad) 96px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.row{display:grid;grid-template-columns:260px 1fr 220px;align-items:baseline;gap:28px;padding:26px 32px}
+.row+.row{border-top:1px solid rgba(255,255,255,.07)}
+.trow{display:grid;grid-template-columns:1.1fr 1fr;align-items:center;padding:17px 26px}
+.trow+.trow{border-top:1px solid rgba(255,255,255,.07)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.feature{display:flex;gap:48px;align-items:center}
+.feature.rev{flex-direction:row-reverse}
+.feature .copy{width:420px;flex-shrink:0;display:flex;flex-direction:column;gap:16px}
+.mock{flex-grow:1;overflow:hidden}
+
+@media (max-width:1100px){
+  :root{--pad:40px}
+  .hero{flex-direction:column;align-items:stretch!important}
+  .hero .copy{width:auto!important}
+  .judge{flex-direction:column;gap:32px!important}
+  .judge .copy{width:auto!important}
+  .feature,.feature.rev{flex-direction:column;align-items:stretch;gap:24px}
+  .feature .copy{width:auto}
+}
+@media (max-width:820px){
+  :root{--pad:22px}
+  .grid3{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr;gap:10px;padding:22px 20px}
+  .row .sign{text-align:left!important}
+  .trow{grid-template-columns:1fr;gap:6px;padding:16px 18px}
+  h1{font-size:29px!important;line-height:1.55!important}
+  .sec-title{font-size:22px}
+  .nav-links{display:none}
+  .terminal-split{flex-direction:column!important;height:auto!important}
+  .terminal-split>div{width:auto!important;border-right:none!important}
+  .app-window .app-list{width:auto!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,.09)}
+  .app-window .app-body{flex-direction:column!important;height:auto!important}
+  .trust{grid-template-columns:1fr!important;gap:28px!important;padding:28px 24px!important}
+  .cta-block{padding:48px 24px!important}
+  .cta-block h2{font-size:24px!important}
+  .footer{flex-direction:column;gap:10px;align-items:flex-start!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="light l1"></div>
+  <div class="light l2"></div>
+  <div class="light l3"></div>
+
+  <div class="content">
+
+    <!-- nav -->
+    <div style="padding:22px var(--pad) 0">
+      <div class="glass" style="border-radius:999px;display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:8px 14px 8px 26px;gap:16px">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div style="width:24px;height:24px;border:1.5px solid var(--accent);border-radius:7px;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px">
+            <div style="height:1.5px;background:var(--accent)"></div>
+            <div style="height:1.5px;background:var(--accent);opacity:.55"></div>
+            <div style="height:1.5px;background:var(--accent);opacity:.3"></div>
+          </div>
+          <span style="font-size:15.5px;font-weight:600">Session Desk</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:30px;font-size:14px;color:var(--muted)">
+          <span class="nav-links" style="display:flex;gap:30px">
+            <a href="#features" style="color:var(--muted)">機能</a>
+            <a href="#trust" style="color:var(--muted)">仕組み</a>
+            <a href="#install" style="color:var(--muted)">導入</a>
+          </span>
+          <a class="btn btn-sm" href="https://github.com/insession-space/session-desk-releases/releases/latest">ダウンロード</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- hero -->
+    <div class="hero" style="padding:84px var(--pad) 92px;display:flex;gap:56px;align-items:center">
+      <div class="copy" style="width:560px;display:flex;flex-direction:column;gap:26px">
+        <div class="eyebrow">macOS · Apple Silicon · v1.9.0</div>
+        <h1 style="font-size:40px;line-height:1.6">走らせたエージェントを、<br>取りこぼさない。</h1>
+        <p class="lead">Claude Code のバックグラウンドジョブを1枚の台帳に並べ、<span style="color:var(--text);white-space:nowrap">返事待ち・停止・未コミット</span>を自動で拾い上げる。気づいたその場で端末に入って、続きをやる。</p>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:6px;flex-wrap:wrap">
+          <a class="btn" href="https://github.com/insession-space/session-desk-releases/releases/latest">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
+            ダウンロード
+          </a>
+          <a class="btn-ghost" href="https://github.com/insession-space/session-desk-releases/releases/latest">リリースノート</a>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:9px;color:var(--faint);font-size:13px;line-height:1.7">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px"><path d="M12 3 4 6.5v5c0 4.6 3.2 8.4 8 9.5 4.8-1.1 8-4.9 8-9.5v-5Z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Developer ID で署名・公証済み。Applications に入れればそのまま開く</span>
+        </div>
+      </div>
+
+      <div class="glass app-window" style="flex-grow:1;overflow:hidden;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.10)">
+          <div style="display:flex;gap:7px">
+            <div style="width:11px;height:11px;border-radius:50%;background:#ff5f57"></div>
+            <div style="width:11px;height:11px;border-radius:50%;background:#febc2e"></div>
+            <div style="width:11px;height:11px;border-radius:50%;background:#28c840"></div>
+          </div>
+          <div style="flex-grow:1;text-align:center;font-size:12px;color:var(--muted)">Session Desk</div>
+          <div class="mono" style="font-size:11px;display:flex;gap:9px">
+            <span style="color:var(--urgent)">⚠2</span><span style="color:var(--info)">▶4</span><span style="color:var(--ok)">✓1</span>
+          </div>
+        </div>
+        <div class="app-body" style="display:flex;height:392px">
+          <div class="app-list" style="width:272px;border-right:1px solid rgba(255,255,255,.09);padding:14px 12px;display:flex;flex-direction:column;gap:8px">
+            <div style="padding:2px 8px 4px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);letter-spacing:.08em">
+              <div style="width:7px;height:7px;border-radius:3px;background:#7fb2f0"></div>session-desk
+            </div>
+            <div style="padding:11px 13px;border-radius:14px;background:linear-gradient(140deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.30);display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;font-weight:500">LP のプロンプトを作る</span><span class="mono" style="font-size:10.5px;color:var(--urgent);white-space:nowrap">返事待ち</span></div>
+              <div style="font-size:11px;color:var(--faint)">アートボードの構成を確認中 · 3分前</div>
+            </div>
+            <div style="padding:11px 13px;display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;color:var(--muted)">ウィジェットの表示を直す</span><span class="mono" style="font-size:10.5px;color:var(--warn);white-space:nowrap">未コミット</span></div>
+              <div style="font-size:11px;color:var(--faint)">スナップショットを書き出した · 18分前</div>
+            </div>
+            <div style="padding:2px 8px 4px;margin-top:6px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);letter-spacing:.08em">
+              <div style="width:7px;height:7px;border-radius:3px;background:#7ee2a8"></div>insession-app
+            </div>
+            <div style="padding:11px 13px;display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;color:var(--muted)">お便りの読み上げを検証</span><span class="mono" style="font-size:10.5px;color:var(--ok);white-space:nowrap">完了</span></div>
+              <div style="font-size:11px;color:var(--faint)">WAV を書き出した · 1時間前</div>
+            </div>
+            <div style="padding:11px 13px;display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;color:var(--muted)">同期のスモークテスト</span><span class="mono" style="font-size:10.5px;color:var(--faint);white-space:nowrap">稼働中</span></div>
+              <div style="font-size:11px;color:var(--faint)">ws クライアントを2本繋いだ · たった今</div>
+            </div>
+          </div>
+          <div class="mono" style="flex-grow:1;padding:16px 18px;display:flex;flex-direction:column;gap:8px;background:rgba(6,9,13,.55);min-width:0;overflow:hidden">
+            <div style="font-size:11px;color:var(--faint);padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.08)">claude attach 8f21c3 — LP のプロンプトを作る</div>
+            <div style="font-size:11.5px;color:var(--muted);line-height:1.75">
+              <div><span style="color:var(--ok)">●</span> Theme.swift を読んだ（dark パレット）</div>
+              <div><span style="color:var(--ok)">●</span> index.html を書き出した</div>
+              <div><span style="color:var(--info)">●</span> Pages の設定を確認している…</div>
+              <div style="margin-top:10px;color:var(--accent)">? このまま公開してよいですか</div>
+              <div style="margin-top:8px;color:var(--text)">&gt; <span style="border-left:7px solid var(--accent);margin-left:2px"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 落ち方 -->
+    <div class="section">
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:44px">
+        <div class="eyebrow">並列で回すと、こう落ちる</div>
+        <h2 class="sec-title">落ちるのは、たいてい<br>気づかなかったときだ。</h2>
+      </div>
+      <div class="glass" style="overflow:hidden">
+        <div class="row">
+          <div style="display:flex;align-items:baseline;gap:12px"><span class="dot" style="background:var(--urgent)"></span><h3 style="font-size:17px">終わったのに気づかない</h3></div>
+          <p style="font-size:14.5px;line-height:1.95;color:var(--muted)">完了通知はどこにも出ない。3時間前に終わっていた成果を、夜になって見つける。</p>
+          <div class="mono sign" style="font-size:12.5px;color:var(--faint);text-align:right">done · 未確認 3時間</div>
+        </div>
+        <div class="row">
+          <div style="display:flex;align-items:baseline;gap:12px"><span class="dot" style="background:var(--urgent)"></span><h3 style="font-size:17px">止まったのに気づかない</h3></div>
+          <p style="font-size:14.5px;line-height:1.95;color:var(--muted)">確認を1つ待っているだけで、あとは全部動いている顔をしている。15分、誰も気づかない。</p>
+          <div class="mono sign" style="font-size:12.5px;color:var(--faint);text-align:right">blocked / 15分 更新なし</div>
+        </div>
+        <div class="row">
+          <div style="display:flex;align-items:baseline;gap:12px"><span class="dot" style="background:var(--warn)"></span><h3 style="font-size:17px">未コミットのまま消える</h3></div>
+          <p style="font-size:14.5px;line-height:1.95;color:var(--muted)">worktree に書かれた成果が、コミットも push もされないままセッションごと片付けられる。</p>
+          <div class="mono sign" style="font-size:12.5px;color:var(--faint);text-align:right">worktree が dirty</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 判定 -->
+    <div class="section judge" style="display:flex;gap:64px;align-items:flex-start">
+      <div class="copy" style="width:400px;display:flex;flex-direction:column;gap:18px;padding-top:10px;flex-shrink:0">
+        <div class="eyebrow">やり忘れの判定</div>
+        <h2 class="sec-title">「見ればわかる」を、<br>アプリ側に持たせた。</h2>
+        <p class="lead">一覧を眺めて自分で判断する必要はない。拾うべきものだけが重さ付きで浮かび上がる。判定のルールは1か所にまとまっていて、色は状態を指すときだけ使う。</p>
+        <div style="display:flex;gap:18px;margin-top:6px;font-size:12.5px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:7px"><span class="dot" style="background:var(--urgent)"></span>今すぐ</span>
+          <span style="display:flex;align-items:center;gap:7px"><span class="dot" style="background:var(--warn)"></span>注意</span>
+          <span style="display:flex;align-items:center;gap:7px"><span class="dot" style="background:var(--info)"></span>お知らせ</span>
+        </div>
+      </div>
+      <div class="glass" style="flex-grow:1;overflow:hidden;min-width:0">
+        <div class="trow" style="border-bottom:1px solid rgba(255,255,255,.10);font-size:11.5px;color:var(--faint);letter-spacing:.08em">
+          <div>判定</div><div>条件</div>
+        </div>
+        <div class="trow"><div style="display:flex;align-items:center;gap:11px;font-size:14.5px"><span class="dot" style="background:var(--urgent)"></span>こちらの返事を待っている</div><div class="mono" style="font-size:12.5px;color:var(--muted)">state == blocked</div></div>
+        <div class="trow"><div style="display:flex;align-items:center;gap:11px;font-size:14.5px"><span class="dot" style="background:var(--urgent)"></span>止まっている可能性</div><div class="mono" style="font-size:12.5px;color:var(--muted)">tempo == blocked</div></div>
+        <div class="trow"><div style="display:flex;align-items:center;gap:11px;font-size:14.5px"><span class="dot" style="background:var(--warn)"></span>更新なし</div><div class="mono" style="font-size:12.5px;color:var(--muted)">15分 動きがない</div></div>
+        <div class="trow"><div style="display:flex;align-items:center;gap:11px;font-size:14.5px"><span class="dot" style="background:var(--info)"></span>完了（未確認）</div><div class="mono" style="font-size:12.5px;color:var(--muted)">done かつ 未確認</div></div>
+        <div class="trow"><div style="display:flex;align-items:center;gap:11px;font-size:14.5px"><span class="dot" style="background:var(--urgent)"></span>完了したまま放置</div><div class="mono" style="font-size:12.5px;color:var(--muted)">上に加えて 3時間</div></div>
+        <div class="trow"><div style="display:flex;align-items:center;gap:11px;font-size:14.5px"><span class="dot" style="background:var(--urgent)"></span>未コミット / 未 push</div><div class="mono" style="font-size:12.5px;color:var(--muted)">worktree が dirty</div></div>
+        <div class="trow"><div style="display:flex;align-items:center;gap:11px;font-size:14.5px"><span class="dot" style="background:var(--warn)"></span>worktree が既に無い</div><div class="mono" style="font-size:12.5px;color:var(--muted)">稼働中なのに消えている</div></div>
+      </div>
+    </div>
+
+    <!-- 機能 -->
+    <div class="section" id="features" style="display:flex;flex-direction:column;gap:56px;scroll-margin-top:24px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="eyebrow">機能</div>
+        <h2 class="sec-title">見張って、そのまま続きをやる。</h2>
+      </div>
+
+      <div class="feature">
+        <div class="copy">
+          <div style="display:flex;align-items:center;gap:11px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3"/><path d="M13 15h4"/></svg>
+            <h3 style="font-size:21px">セッションごとの端末</h3>
+          </div>
+          <p class="lead">一覧で選んだ瞬間、そのセッションの端末が右に出る。<span class="mono" style="color:var(--text);font-size:15px">claude attach</span> をそのまま流しているので、稼働中でも完了後でも中に入れる。⌘D で最大4枚に割れる。</p>
+        </div>
+        <div class="glass mock terminal-split" style="height:240px;display:flex">
+          <div style="flex-grow:1;border-right:1px solid rgba(255,255,255,.09);padding:16px 18px;min-width:0" class="mono">
+            <div style="font-size:10.5px;color:var(--faint);margin-bottom:9px">ペイン 1 · session-desk</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.85">
+              <div><span style="color:var(--ok)">●</span> swift build … 完了</div>
+              <div><span style="color:var(--info)">●</span> テストを走らせている</div>
+              <div style="color:var(--faint)">　SessionDeskCoreTests … 34 passed</div>
+              <div style="color:var(--text);margin-top:6px">&gt; <span style="border-left:6px solid var(--accent)"></span></div>
+            </div>
+          </div>
+          <div style="width:46%;display:flex;flex-direction:column">
+            <div style="flex-grow:1;border-bottom:1px solid rgba(255,255,255,.09);padding:16px 18px" class="mono">
+              <div style="font-size:10.5px;color:var(--faint);margin-bottom:9px">ペイン 2 · insession-app</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.85">
+                <div><span style="color:var(--warn)">●</span> 確認を待っている</div>
+                <div style="color:var(--faint)">? この方針で進めますか</div>
+              </div>
+            </div>
+            <div style="flex-grow:1;padding:16px 18px" class="mono">
+              <div style="font-size:10.5px;color:var(--faint);margin-bottom:9px">ペイン 3 · docs</div>
+              <div style="font-size:11px;color:var(--muted)"><span style="color:var(--ok)">●</span> push 済み</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature rev">
+        <div class="copy">
+          <div style="display:flex;align-items:center;gap:11px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/><path d="m17 17 2 2 3-4"/></svg>
+            <h3 style="font-size:21px">タスクの台帳</h3>
+          </div>
+          <p class="lead">「何をやるつもりか」はジョブ側のどこにも書かれていない。だから Session Desk が持つ。更新順の1本の一覧で、タスクからセッションを起こし、走らせたジョブを並べて紐づけておける。</p>
+        </div>
+        <div class="glass mock" style="height:268px">
+          <div style="display:flex;gap:8px;padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.09);flex-wrap:wrap">
+            <span style="font-size:11.5px;padding:5px 13px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.28)">すべて</span>
+            <span style="font-size:11.5px;padding:5px 13px;border-radius:999px;color:var(--faint)">未着手</span>
+            <span style="font-size:11.5px;padding:5px 13px;border-radius:999px;color:var(--faint)">進行中</span>
+            <span style="font-size:11.5px;padding:5px 13px;border-radius:999px;color:var(--faint)">完了</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.07)">
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:13.5px">LP のデザイン方向を決める</span><span style="font-size:11px;color:var(--faint)">セッション 2本 · ~/private-work/session-desk</span></div>
+            <span class="mono" style="font-size:11px;color:var(--info);white-space:nowrap">進行中</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.07)">
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:13.5px">ウィジェットの空状態を直す</span><span style="font-size:11px;color:var(--faint)">セッション 1本 · 未コミットあり</span></div>
+            <span class="mono" style="font-size:11px;color:var(--info);white-space:nowrap">進行中</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px">
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:13.5px;color:var(--muted)">リリース手順を README に足す</span><span style="font-size:11px;color:var(--faint)">セッションなし</span></div>
+            <span class="mono" style="font-size:11px;color:var(--faint);white-space:nowrap">未着手</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="6" r="2.5"/><circle cx="7" cy="18" r="2.5"/><path d="M7 8.5v7"/><circle cx="17" cy="6" r="2.5"/><path d="M17 8.5v4a3 3 0 0 1-3 3h-3"/></svg>
+          <h3 style="font-size:17px">レビュー待ち</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">自分がレビュアーの open な PR を、朝いちばんに開く画面に出す。滞留したまま忘れる方の落ち方も拾う。</p>
+          <div style="display:flex;flex-direction:column;gap:9px;margin-top:4px">
+            <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)"><span class="dot" style="width:7px;height:7px;background:var(--ok)"></span>#284 設定タブの撮影に対応する</div>
+            <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)"><span class="dot" style="width:7px;height:7px;background:var(--faint)"></span>#279 タスクの一覧を1本にする</div>
+          </div>
+        </div>
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="m12 13 4-3"/></svg>
+          <h3 style="font-size:17px">使い切るまで</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">Claude と Codex の残りを並べて出す。Codex はローカルのログから読むので通信も認証も要らない。</p>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>Claude · 5時間</span><span class="mono">62%</span></div>
+              <div style="height:6px;border-radius:3px;background:rgba(255,255,255,.10)"><div style="width:62%;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(121,184,232,.6),var(--info))"></div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>Codex · 週</span><span class="mono">28%</span></div>
+              <div style="height:6px;border-radius:3px;background:rgba(255,255,255,.10)"><div style="width:28%;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(126,226,168,.6),var(--ok))"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <h3 style="font-size:17px">ウィジェット</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">通知センターとデスクトップに、要対応のセッションだけを重い順で。行を押すと本体がそのセッションを開いた状態で立ち上がる。</p>
+          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px">
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span class="dot" style="width:6px;height:6px;background:var(--urgent)"></span><span>返事待ち · LP のプロンプト</span></div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--warn)"></span><span>未コミット · ウィジェット修正</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 仕組み -->
+    <div class="section" id="trust" style="scroll-margin-top:24px">
+      <div class="glass trust" style="padding:44px 48px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:44px">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <h3 style="font-size:17px;display:flex;align-items:center;gap:10px"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span>読むだけ</h3>
+          <p style="font-size:14px;line-height:2;color:var(--muted)">Claude Code が書いたジョブのファイルは読むだけで、書き換えない。会話ログも消さないので <span class="mono" style="font-size:13px">claude --resume</span> の対象は残る。</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <h3 style="font-size:17px;display:flex;align-items:center;gap:10px"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span>トークンを持たない</h3>
+          <p style="font-size:14px;line-height:2;color:var(--muted)">GitHub の認証は <span class="mono" style="font-size:13px">gh</span> の keyring に任せる。アプリ側に資格情報を保存せず、エラー文にも混ぜない。</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <h3 style="font-size:17px;display:flex;align-items:center;gap:10px"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span>署名と公証</h3>
+          <p style="font-size:14px;line-height:2;color:var(--muted)">Apple の Developer ID で署名し、公証まで通して配っている。検疫属性を外す作業は要らない。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 導入 -->
+    <div class="section" id="install" style="scroll-margin-top:24px">
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:40px">
+        <div class="eyebrow">導入</div>
+        <h2 class="sec-title">3ステップで動く。</h2>
+      </div>
+      <div class="grid3">
+        <div class="glass" style="padding:30px;display:flex;flex-direction:column;gap:12px">
+          <div class="mono" style="font-size:13px;color:var(--accent)">01</div>
+          <h3 style="font-size:18px">dmg を落とす</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">GitHub Releases から最新の <span class="mono" style="font-size:13px">SessionDesk_*.dmg</span> をダウンロードする。</p>
+        </div>
+        <div class="glass" style="padding:30px;display:flex;flex-direction:column;gap:12px">
+          <div class="mono" style="font-size:13px;color:var(--accent)">02</div>
+          <h3 style="font-size:18px">Applications へ入れる</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">dmg の上から直接起動せず、アプリを Applications にドラッグしてコピーする。</p>
+        </div>
+        <div class="glass" style="padding:30px;display:flex;flex-direction:column;gap:12px">
+          <div class="mono" style="font-size:13px;color:var(--accent)">03</div>
+          <h3 style="font-size:18px">開く</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">公証済みなのでダブルクリックでそのまま開く。以降の更新はアプリ内から確認できる。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer cta -->
+    <div style="padding:0 var(--pad) 64px">
+      <div class="glass cta-block" style="padding:76px 48px;display:flex;flex-direction:column;align-items:center;gap:26px">
+        <h2 style="font-size:32px;line-height:1.55;text-align:center">まず1日、置いておくところから。</h2>
+        <p class="lead" style="text-align:center;max-width:560px">並列で回している人ほど、取りこぼしは静かに増える。</p>
+        <a class="btn" href="https://github.com/insession-space/session-desk-releases/releases/latest" style="margin-top:6px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
+          ダウンロード
+        </a>
+        <div class="mono" style="font-size:12.5px;color:var(--faint);text-align:center">v1.9.0 · macOS (Apple Silicon) · 無料</div>
+      </div>
+    </div>
+
+    <div class="footer" style="padding:0 var(--pad) 44px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--faint);gap:12px">
+      <span>Session Desk</span>
+      <span>個人開発 · <a href="https://github.com/insession-space/session-desk-releases/releases" style="color:var(--faint);text-decoration:underline;text-underline-offset:3px">GitHub Releases</a> で配布</span>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
