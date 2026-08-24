@@ -8,8 +8,8 @@
 <meta property="og:title" content="Session Desk">
 <meta property="og:description" content="走らせたエージェントを、取りこぼさない。Claude Code のバックグラウンドジョブを見張る macOS アプリ。">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://insession-space.github.io/session-desk-releases/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' rx='7' fill='none' stroke='%23ffb454' stroke-width='2'/%3E%3Cg stroke='%23ffb454' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M10 12h12' opacity='1'/%3E%3Cpath d='M10 16h12' opacity='.55'/%3E%3Cpath d='M10 20h12' opacity='.3'/%3E%3C/g%3E%3C/svg%3E">
+<meta property="og:url" content="https://session-desk.insession.space/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20rx%3D%22230%22%20fill%3D%22%2326231f%22%2F%3E%3Cg%20fill%3D%22%238A857A%22%20opacity%3D%22.35%22%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3C%2Fg%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22352%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E0664B%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22492%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E8C25E%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22214%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%2388B57F%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -118,11 +118,20 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
     <div style="padding:22px var(--pad) 0">
       <div class="glass" style="border-radius:999px;display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:8px 14px 8px 26px;gap:16px">
         <div style="display:flex;align-items:center;gap:11px">
-          <div style="width:24px;height:24px;border:1.5px solid var(--accent);border-radius:7px;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 4px">
-            <div style="height:1.5px;background:var(--accent)"></div>
-            <div style="height:1.5px;background:var(--accent);opacity:.55"></div>
-            <div style="height:1.5px;background:var(--accent);opacity:.3"></div>
-          </div>
+          <svg width="28" height="28" viewBox="0 0 1024 1024" aria-hidden="true" style="display:block;border-radius:23%;flex-shrink:0">
+            <defs><linearGradient id="sdg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#35322e"/><stop offset="1" stop-color="#1c1a18"/>
+            </linearGradient></defs>
+            <rect width="1024" height="1024" rx="230" fill="url(#sdg)"/>
+            <g fill="#8A857A" opacity=".35">
+              <rect x="232" y="282" width="560" height="124" rx="62"/>
+              <rect x="232" y="450" width="560" height="124" rx="62"/>
+              <rect x="232" y="618" width="560" height="124" rx="62"/>
+            </g>
+            <rect x="232" y="282" width="352" height="124" rx="62" fill="#E0664B"/>
+            <rect x="232" y="450" width="492" height="124" rx="62" fill="#E8C25E"/>
+            <rect x="232" y="618" width="214" height="124" rx="62" fill="#88B57F"/>
+          </svg>
           <span style="font-size:15.5px;font-weight:600">Session Desk</span>
         </div>
         <div style="display:flex;align-items:center;gap:30px;font-size:14px;color:var(--muted)">
