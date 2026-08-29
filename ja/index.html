@@ -1,28 +1,28 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Odradek — Ship in parallel. Miss nothing.</title>
-<meta name="description" content="A macOS app that watches every Claude Code and Codex session and surfaces the ones waiting on you, stalled, or sitting on uncommitted work.">
+<title>Odradek — 並列で走らせて、取りこぼさない。</title>
+<meta name="description" content="Claude Code と Codex のセッションを見張って、返事待ち・停止・未コミットのものを自動で拾い上げる macOS アプリ。">
 <meta property="og:title" content="Odradek">
-<meta property="og:description" content="Ship in parallel. Miss nothing. A macOS app that watches every Claude Code and Codex session.">
+<meta property="og:description" content="並列で走らせて、取りこぼさない。Claude Code と Codex のセッションを見張る macOS アプリ。">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://odradek.insession.space/">
+<meta property="og:url" content="https://odradek.insession.space/ja/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20rx%3D%22230%22%20fill%3D%22%2326231f%22%2F%3E%3Cg%20fill%3D%22%238A857A%22%20opacity%3D%22.35%22%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3C%2Fg%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22352%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E0664B%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22492%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E8C25E%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22214%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%2388B57F%22%2F%3E%3C%2Fsvg%3E">
 <link rel="alternate" hreflang="en" href="https://odradek.insession.space/">
 <link rel="alternate" hreflang="ja" href="https://odradek.insession.space/ja/">
 <link rel="alternate" hreflang="x-default" href="https://odradek.insession.space/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+JP:wght@400;500;600;700&display=swap">
 <style>
 :root{
   --bg:#08090A; --panel:#0E1012; --panel2:#111417;
   --line:#191C1F; --line2:#262A2E; --line3:#333A40;
   --text:#F2F4F5; --muted:#98A0A6; --faint:#5F676D;
   --amber:#FFB454; --urgent:#FF6B57; --ok:#4E9E76; --blue:#6BA5E8;
-  --sans:"Plus Jakarta Sans","IBM Plex Sans JP","Hiragino Sans",system-ui,sans-serif;
+  --sans:"Plus Jakarta Sans","IBM Plex Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --pad:32px;
 }
@@ -34,6 +34,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-we
   background-size:56px 56px}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,p,ul{margin:0}
+h1,h2,h3,p,td{word-break:auto-phrase;line-break:strict}
 .wrap{max-width:1200px;margin:0 auto;padding:0 var(--pad)}
 .mono{font-family:var(--mono)}
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:4px}
@@ -60,8 +61,8 @@ h1,h2,h3,p,ul{margin:0}
   border-radius:999px;background:var(--panel);font-size:12.5px;color:var(--muted)}
 .badge b{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--amber);
   background:rgba(255,180,84,.12);border-radius:999px;padding:2px 9px}
-h1{font-weight:800;font-size:62px;line-height:1.1;letter-spacing:-.035em;margin-top:26px;max-width:15ch;text-wrap:balance}
-.sub{font-size:16.5px;line-height:1.75;color:var(--muted);max-width:62ch;margin-top:20px;text-wrap:pretty}
+h1{font-weight:700;font-size:52px;line-height:1.28;letter-spacing:-.02em;margin-top:26px;max-width:17ch;text-wrap:balance}
+.sub{font-size:15.5px;line-height:2;color:var(--muted);max-width:50ch;margin-top:20px;text-wrap:pretty}
 .cta{display:flex;gap:11px;margin-top:32px;flex-wrap:wrap;justify-content:center}
 .note{margin-top:14px;font-size:12.5px;color:var(--faint)}
 
@@ -94,15 +95,15 @@ h1{font-weight:800;font-size:62px;line-height:1.1;letter-spacing:-.035em;margin-
 /* ------------------------------------------------------------- sections */
 .sec{padding:110px 0 0}
 .sec-c{text-align:center;display:flex;flex-direction:column;align-items:center}
-h2{font-weight:700;font-size:38px;line-height:1.2;letter-spacing:-.03em;text-wrap:balance}
-h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
+h2{font-weight:700;font-size:32px;line-height:1.45;letter-spacing:-.015em;text-wrap:balance}
+h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
 
 .card{background:var(--panel);border:1px solid var(--line2);border-radius:12px}
 .rows{margin-top:40px;text-align:left;width:100%}
 .row{display:grid;grid-template-columns:230px 1fr auto;gap:28px;align-items:baseline;padding:22px 26px}
 .row+.row{border-top:1px solid var(--line)}
 .row .rt{font-weight:600;font-size:15px}
-.row .rd{font-size:14px;line-height:1.85;color:var(--muted)}
+.row .rd{font-size:14px;line-height:1.95;color:var(--muted)}
 .row .rs{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap}
 
 .tbl{width:100%;border-collapse:collapse;font-size:14px;text-align:left;margin-top:40px;
@@ -114,7 +115,7 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:44px;text-align:left;width:100%}
 .feat{padding:26px 28px;display:flex;flex-direction:column;gap:12px}
-.feat p{font-size:14px;line-height:1.9;color:var(--muted)}
+.feat p{font-size:14px;line-height:1.95;color:var(--muted)}
 .demo{margin-top:4px;background:var(--bg);border:1px solid var(--line);border-radius:9px;
   padding:13px 15px;display:flex;flex-direction:column;gap:8px}
 .dl{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
@@ -123,20 +124,20 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:44px;text-align:left;width:100%}
 .step{padding:26px 28px;display:flex;flex-direction:column;gap:11px}
 .step .n{font-family:var(--mono);font-size:12px;color:var(--amber)}
-.step p{font-size:14px;line-height:1.9;color:var(--muted)}
+.step p{font-size:14px;line-height:1.95;color:var(--muted)}
 
 /* ------------------------------------------------------------------ end */
 .end{text-align:center;padding:120px 0 0;display:flex;flex-direction:column;align-items:center}
-.end h2{font-size:44px;max-width:19ch}
+.end h2{font-size:36px;max-width:22ch}
 .foot{border-top:1px solid var(--line);margin-top:120px;padding:26px 0 44px;
   display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--faint);flex-wrap:wrap}
 .foot a{text-decoration:underline;text-underline-offset:3px}
 
 @media (max-width:900px){
   :root{--pad:22px}
-  h1{font-size:38px}
-  h2{font-size:27px}
-  .end h2{font-size:30px}
+  h1{font-size:31px;line-height:1.5}
+  h2{font-size:23px}
+  .end h2{font-size:25px}
   .navlinks{display:none}
   .app-body{flex-direction:column}
   .side{width:auto;border-right:0;border-bottom:1px solid var(--line)}
@@ -153,26 +154,26 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 <div class="wrap">
 
   <nav class="nav">
-    <a class="brand" href="/"><span class="mark"></span>ODRADEK</a>
+    <a class="brand" href="/ja/"><span class="mark"></span>ODRADEK</a>
     <div class="navlinks">
-      <a href="#signals">Signals</a>
-      <a href="#features">Features</a>
-      <a href="#install">Install</a>
-      <a href="/ja/" lang="ja">日本語</a>
+      <a href="#signals">判定</a>
+      <a href="#features">機能</a>
+      <a href="#install">導入</a>
+      <a href="/" lang="en">EN</a>
     </div>
-    <a class="btn" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">Download</a>
+    <a class="btn" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">ダウンロード</a>
   </nav>
 
   <!-- ------------------------------------------------------------ hero -->
   <header class="hero">
-    <span class="badge">Built for <b>Claude Code · Codex</b></span>
-    <h1>Ship in parallel. Miss nothing.</h1>
-    <p class="sub">Odradek watches every Claude Code and Codex session on your Mac and surfaces the ones waiting on you, stalled, or sitting on uncommitted work — before you notice they went quiet.</p>
+    <span class="badge">対応エージェント <b>Claude Code · Codex</b></span>
+    <h1>並列で走らせて、取りこぼさない。</h1>
+    <p class="sub">Mac で動いている Claude Code と Codex のセッションを見張って、返事を待っているもの・止まっているもの・コミットされていないものを、静かになったことに気づく前に拾い上げます。</p>
     <div class="cta">
-      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">Download for Mac</a>
-      <a class="btn btn-lg btn-2" href="https://github.com/insession-space/odradek-ide-releases/releases">Changelog</a>
+      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">ダウンロード</a>
+      <a class="btn btn-lg btn-2" href="https://github.com/insession-space/odradek-ide-releases/releases">変更履歴</a>
     </div>
-    <p class="note">macOS 26 · Apple Silicon · Developer ID signed and notarized · Free</p>
+    <p class="note">macOS 26 · Apple Silicon · Developer ID 署名・公証済み · 無料</p>
   </header>
 
   <!-- --------------------------------------------------------- app mock -->
@@ -180,38 +181,38 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
     <div class="app-bar">
       <span class="tl" style="background:#FF5F57"></span><span class="tl" style="background:#FEBC2E"></span><span class="tl" style="background:#28C840"></span>
       <span class="app-title">Odradek</span>
-      <span class="app-stat"><span style="color:var(--urgent)">2 attention</span><span style="color:var(--blue)">4 running</span><span style="color:var(--faint)">1 done</span></span>
+      <span class="app-stat"><span style="color:var(--urgent)">要対応 2</span><span style="color:var(--blue)">稼働 4</span><span style="color:var(--faint)">完了 1</span></span>
     </div>
     <div class="app-body">
       <div class="side">
         <div class="grp">odradek-ide</div>
         <div class="item"><span class="bar" style="background:var(--urgent)"></span>
-          <div><div class="it">Write the LP prompt</div><div class="is">AskUserQuestion · 3m</div></div>
-          <span class="ist" style="color:var(--urgent)">WAITING</span></div>
+          <div><div class="it">LP のプロンプトを作る</div><div class="is">AskUserQuestion · 3分前</div></div>
+          <span class="ist" style="color:var(--urgent)">返事待ち</span></div>
         <div class="item"><span class="bar" style="background:var(--amber)"></span>
-          <div><div class="it">Fix widget rendering</div><div class="is">Edit WidgetView.swift · 18m</div></div>
-          <span class="ist" style="color:var(--amber)">UNCOMMITTED</span></div>
+          <div><div class="it">ウィジェットの表示を直す</div><div class="is">Edit WidgetView.swift · 18分前</div></div>
+          <span class="ist" style="color:var(--amber)">未コミット</span></div>
         <div class="grp">insession-app</div>
         <div class="item"><span class="bar" style="background:var(--ok)"></span>
-          <div><div class="it">Verify letter read-aloud</div><div class="is">wrote the WAV · 1h</div></div>
-          <span class="ist" style="color:var(--ok)">DONE</span></div>
+          <div><div class="it">お便りの読み上げを検証</div><div class="is">WAV を書き出した · 1時間前</div></div>
+          <span class="ist" style="color:var(--ok)">完了</span></div>
         <div class="item"><span class="bar" style="background:var(--blue)"></span>
-          <div><div class="it">Sync smoke test</div><div class="is">Bash node ws-smoke.mjs · now</div></div>
-          <span class="ist" style="color:var(--blue)">RUNNING</span></div>
+          <div><div class="it">同期のスモークテスト</div><div class="is">Bash node ws-smoke.mjs · たった今</div></div>
+          <span class="ist" style="color:var(--blue)">稼働中</span></div>
       </div>
       <div class="term">
-        <div style="color:var(--faint)">claude attach 8f21c3 — Write the LP prompt</div>
-        <div><span style="color:var(--ok)">●</span> read Theme.swift (dark palette)</div>
-        <div><span style="color:var(--ok)">●</span> wrote index.html</div>
-        <div><span style="color:var(--blue)">●</span> checking Pages settings…</div>
-        <div style="margin-top:10px;color:var(--amber)">? OK to publish as is</div>
+        <div style="color:var(--faint)">claude attach 8f21c3 — LP のプロンプトを作る</div>
+        <div><span style="color:var(--ok)">●</span> Theme.swift を読んだ（dark パレット）</div>
+        <div><span style="color:var(--ok)">●</span> index.html を書き出した</div>
+        <div><span style="color:var(--blue)">●</span> Pages の設定を確認している…</div>
+        <div style="margin-top:10px;color:var(--amber)">? このまま公開してよいですか</div>
         <div>&gt;<span class="caret">&nbsp;</span></div>
       </div>
     </div>
   </div>
 
   <!-- ------------------------------------------------------------ chips -->
-  <p class="chips-label">Works with the agents you already run</p>
+  <p class="chips-label">すでに使っているものに、そのまま乗ります</p>
   <div class="chips">
     <span class="chip"><span class="d" style="background:var(--amber)"></span>Claude Code</span>
     <span class="chip"><span class="d" style="background:var(--ok)"></span>Codex</span>
@@ -223,96 +224,96 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 
   <!-- ---------------------------------------------------------- problem -->
   <section class="sec sec-c">
-    <h2>Things fall through when nobody was looking.</h2>
-    <p class="sub">None of these is a bug. Each one is a run that finished, or stopped, in a window you had already scrolled past.</p>
+    <h2>取りこぼしは、誰も見ていないときに起きます。</h2>
+    <p class="sub">どれも不具合ではありません。もう画面から流れてしまったウィンドウの中で、終わったり止まったりしているだけです。</p>
     <div class="card rows">
       <div class="row">
-        <span class="rt">It finished, unnoticed</span>
-        <span class="rd">There is no completion notice anywhere. You find the result at night, three hours after it landed.</span>
-        <span class="rs">done · unseen 3h</span>
+        <span class="rt">終わったのに気づかない</span>
+        <span class="rd">完了を知らせるものがどこにも出ません。3時間前に終わっていた成果を、夜になってから見つけます。</span>
+        <span class="rs">done · 未確認 3時間</span>
       </div>
       <div class="row">
-        <span class="rt">It stalled, unnoticed</span>
-        <span class="rd">It is waiting on a single confirmation, and everything else about it still looks busy.</span>
-        <span class="rs">blocked / 15 min idle</span>
+        <span class="rt">止まったのに気づかない</span>
+        <span class="rd">確認を1つ待っているだけなのに、それ以外は全部動いている顔をしています。</span>
+        <span class="rs">blocked / 15分 更新なし</span>
       </div>
       <div class="row">
-        <span class="rt">It vanished, uncommitted</span>
-        <span class="rd">Work written into a worktree gets cleaned up along with the session — never committed, never pushed.</span>
-        <span class="rs">worktree dirty</span>
+        <span class="rt">未コミットのまま消える</span>
+        <span class="rd">worktree に書かれた成果が、コミットも push もされないまま、セッションごと片付けられます。</span>
+        <span class="rs">worktree が dirty</span>
       </div>
     </div>
   </section>
 
   <!-- ---------------------------------------------------------- signals -->
   <section class="sec sec-c" id="signals" style="scroll-margin-top:24px">
-    <h2>Seven signals. Nothing else lights up.</h2>
-    <p class="sub">Color means state, and only state. Every rule lives in one place, so the list reads the same way every time you glance at it.</p>
+    <h2>光るのは7つだけです。</h2>
+    <p class="sub">色は状態しか指しません。判定のルールは1か所にまとまっているので、一覧はいつ見ても同じ読み方ができます。</p>
     <table class="tbl">
-      <tr><td>01</td><td>Waiting on your reply</td><td>state = blocked</td></tr>
-      <tr><td>02</td><td>Probably stalled</td><td>tempo = blocked</td></tr>
-      <tr><td>03</td><td>No movement for 15 minutes</td><td>no update</td></tr>
-      <tr><td>04</td><td>Finished, still unseen</td><td>done, unconfirmed</td></tr>
-      <tr><td>05</td><td>Finished and left sitting</td><td>the above, plus 3h</td></tr>
-      <tr><td>06</td><td>Never committed or pushed</td><td>worktree dirty</td></tr>
-      <tr><td>07</td><td>Worktree already gone</td><td>missing while running</td></tr>
+      <tr><td>01</td><td>こちらの返事を待っている</td><td>state = blocked</td></tr>
+      <tr><td>02</td><td>止まっている可能性がある</td><td>tempo = blocked</td></tr>
+      <tr><td>03</td><td>15分 動きがない</td><td>更新なし</td></tr>
+      <tr><td>04</td><td>終わったが未確認</td><td>done かつ 未確認</td></tr>
+      <tr><td>05</td><td>終わったまま放置されている</td><td>上に加えて 3時間</td></tr>
+      <tr><td>06</td><td>コミットも push もされていない</td><td>worktree が dirty</td></tr>
+      <tr><td>07</td><td>worktree が既に無い</td><td>稼働中なのに消えている</td></tr>
     </table>
   </section>
 
   <!-- --------------------------------------------------------- features -->
   <section class="sec sec-c" id="features" style="scroll-margin-top:24px">
-    <h2>Watch it, then pick up where it left off.</h2>
-    <p class="sub">The list is the entry point, not the destination. Every row opens into the terminal that produced it.</p>
+    <h2>見張って、そのまま続きをやれます。</h2>
+    <p class="sub">一覧は入口で、目的地ではありません。どの行からでも、それを動かしている端末に入れます。</p>
     <div class="grid2">
 
       <div class="card feat">
-        <h3>A terminal per session</h3>
-        <p>Select a row and its terminal opens on the right. It streams <span class="mono">claude attach</span>, so you can type into a run that is still going. Split the pane when one screen is not enough.</p>
+        <h3>セッションごとの端末</h3>
+        <p>一覧で選ぶと、そのセッションの端末が右に出ます。<span class="mono">claude attach</span> をそのまま流しているので、稼働中のセッションにも打ち込めます。1画面で足りなければ分割できます。</p>
         <div class="demo">
-          <span class="dl mono"><span class="d" style="background:var(--ok)"></span>swift build … done</span>
-          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>running tests</span>
+          <span class="dl mono"><span class="d" style="background:var(--ok)"></span>swift build … 完了</span>
+          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>テストを走らせている</span>
         </div>
       </div>
 
       <div class="card feat">
-        <h3>A ledger for what you meant to do</h3>
-        <p>Intent is written nowhere on the job side, so Odradek keeps it. One list in update order: start a session from a task, and the runs you launch stay linked to it.</p>
+        <h3>やるつもりを覚えておく台帳</h3>
+        <p>「何をやるつもりか」はジョブ側のどこにも書かれていないので、Odradek が持ちます。更新順の一本の一覧で、タスクからセッションを起こし、走らせたジョブを紐づけたままにできます。</p>
         <div class="demo">
-          <span class="dl"><span class="d" style="background:var(--blue)"></span>Decide the LP design direction<span class="mono" style="color:var(--faint);margin-left:auto">2 sessions</span></span>
-          <span class="dl"><span class="d" style="background:var(--faint)"></span>Add the release steps to the README<span class="mono" style="color:var(--faint);margin-left:auto">todo</span></span>
+          <span class="dl"><span class="d" style="background:var(--blue)"></span>LP のデザイン方向を決める<span class="mono" style="color:var(--faint);margin-left:auto">セッション 2本</span></span>
+          <span class="dl"><span class="d" style="background:var(--faint)"></span>リリース手順を README に足す<span class="mono" style="color:var(--faint);margin-left:auto">未着手</span></span>
         </div>
       </div>
 
       <div class="card feat">
-        <h3>A review board</h3>
-        <p>Review requests and your own pull requests on a three-column board. Press a card to open it on GitHub. The ones you left sitting are surfaced too.</p>
+        <h3>レビューの盤面</h3>
+        <p>レビュー依頼と自分の PR を3列の盤面に並べます。カードを押すと GitHub で開きます。滞留したまま忘れている方も拾います。</p>
         <div class="demo">
-          <span class="dl mono"><span class="d" style="background:var(--urgent)"></span>#417 follow-up<span style="color:var(--faint);margin-left:auto">to review</span></span>
-          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>#409 notifications<span style="color:var(--faint);margin-left:auto">in review</span></span>
+          <span class="dl mono"><span class="d" style="background:var(--urgent)"></span>#417 追従<span style="color:var(--faint);margin-left:auto">未レビュー</span></span>
+          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>#409 通知<span style="color:var(--faint);margin-left:auto">レビュー中</span></span>
         </div>
       </div>
 
       <div class="card feat">
-        <h3>Notifications that mean something</h3>
-        <p>A macOS notification the moment a run starts waiting, stops, or sits finished. Press the banner and the app opens on that session.</p>
+        <h3>意味のある通知</h3>
+        <p>返事待ちになった・止まった・終わったまま放置になった、その瞬間に macOS の通知を出します。バナーを押すと、そのセッションを開いた状態でアプリが立ち上がります。</p>
         <div class="demo">
-          <span class="dl"><span class="d" style="background:var(--urgent)"></span>Waiting · Write the LP prompt</span>
-          <span class="dl"><span class="d" style="background:var(--amber)"></span>15 min idle · Sync smoke test</span>
+          <span class="dl"><span class="d" style="background:var(--urgent)"></span>返事待ち · LP のプロンプトを作る</span>
+          <span class="dl"><span class="d" style="background:var(--amber)"></span>15分 更新なし · 同期のスモークテスト</span>
         </div>
       </div>
 
       <div class="card feat">
-        <h3>What it is doing right now</h3>
-        <p>Each row shows the step a run is on. If it stopped on a question, you can read the question itself from the list, without opening the terminal.</p>
+        <h3>いま何をしているかが見える</h3>
+        <p>一覧の行に、そのセッションが今どの手を打っているかを出します。質問で止まっていれば、端末を開かなくても質問そのものを読めます。</p>
         <div class="demo">
           <span class="dl mono"><span class="d" style="background:var(--blue)"></span>Bash: swift build</span>
-          <span class="dl mono"><span class="d" style="background:var(--amber)"></span>? OK to go this way</span>
+          <span class="dl mono"><span class="d" style="background:var(--amber)"></span>? この方針で進めますか</span>
         </div>
       </div>
 
       <div class="card feat">
-        <h3>Your agent, your model</h3>
-        <p>Choose Claude Code or Codex, and the model to run it with, at launch. Set a default skill and it is already selected the next time.</p>
+        <h3>エージェントとモデルを選べる</h3>
+        <p>Claude Code と Codex のどちらで、どのモデルで走らせるかを起動時に選べます。よく使うスキルを既定にしておくと、次からは最初から入っています。</p>
         <div class="demo">
           <span class="dl mono"><span class="d" style="background:var(--ok)"></span>Claude Code · claude-fable-5</span>
           <span class="dl mono"><span class="d" style="background:var(--faint)"></span>Codex · gpt-5</span>
@@ -320,8 +321,8 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
       </div>
 
       <div class="card feat">
-        <h3>Read the diff before it disappears</h3>
-        <p>See what is still uncommitted in a worktree without entering the terminal. A tree of changed files with collapsible hunks, so you can check the work before cleaning it up.</p>
+        <h3>消える前に差分を読める</h3>
+        <p>worktree に残っている差分を、端末に入らずに読めます。変更ファイルのツリーと折りたたみ付きなので、片付ける前に何が書かれたかを確かめられます。</p>
         <div class="demo">
           <span class="dl mono"><span class="d" style="background:var(--amber)"></span>M swift/Sources/Widget/WidgetView.swift</span>
           <span class="dl mono"><span class="d" style="background:var(--ok)"></span>A swift/Tests/WidgetTests.swift</span>
@@ -329,11 +330,11 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
       </div>
 
       <div class="card feat">
-        <h3>Repositories and skills</h3>
-        <p>Your repositories, grouped and colored by org. The Skills tab lists <span class="mono">.claude/skills</span>, and pressing one starts a session with that skill already chosen.</p>
+        <h3>リポジトリとスキル</h3>
+        <p>org のロゴと色で分かれたリポジトリの一覧です。「スキル」タブに <span class="mono">.claude/skills</span> が並び、押すとそのスキルを選んだ状態で新しいセッションを起こせます。</p>
         <div class="demo">
-          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>ship-session · issue to green</span>
-          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>release · changeset to published</span>
+          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>ship-session · 要望を Issue にして緑まで</span>
+          <span class="dl mono"><span class="d" style="background:var(--blue)"></span>release · changeset から公開まで</span>
         </div>
       </div>
 
@@ -342,59 +343,59 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 
   <!-- ------------------------------------------------------------ trust -->
   <section class="sec sec-c">
-    <h2>It reads. It does not touch.</h2>
-    <p class="sub">Odradek sits next to the tools you already trust, and stays out of their way.</p>
+    <h2>読むだけで、書き換えません。</h2>
+    <p class="sub">すでに使っている道具の隣に置くもので、その邪魔はしません。</p>
     <div class="grid3">
       <div class="card step">
-        <h3><span class="d" style="background:var(--ok);display:inline-block;margin-right:8px"></span>Read-only</h3>
-        <p>Job files written by Claude Code are only read, never modified. Conversation logs stay, so <span class="mono">claude --resume</span> still works.</p>
+        <h3><span class="d" style="background:var(--ok);display:inline-block;margin-right:8px"></span>読むだけ</h3>
+        <p>Claude Code が書いたジョブのファイルは読むだけで、書き換えません。会話ログもそのまま残るので、<span class="mono">claude --resume</span> は今までどおり使えます。</p>
       </div>
       <div class="card step">
-        <h3><span class="d" style="background:var(--ok);display:inline-block;margin-right:8px"></span>No tokens stored</h3>
-        <p>GitHub auth is left to <span class="mono">gh</span> and its keyring. The app stores no credentials and never leaks them into error messages.</p>
+        <h3><span class="d" style="background:var(--ok);display:inline-block;margin-right:8px"></span>トークンを持たない</h3>
+        <p>GitHub の認証は <span class="mono">gh</span> とその keyring に任せています。アプリは資格情報を保存せず、エラーメッセージにも出しません。</p>
       </div>
       <div class="card step">
-        <h3><span class="d" style="background:var(--ok);display:inline-block;margin-right:8px"></span>Signed and notarized</h3>
-        <p>Signed with an Apple Developer ID and notarized. No need to strip quarantine attributes to open it.</p>
+        <h3><span class="d" style="background:var(--ok);display:inline-block;margin-right:8px"></span>署名と公証</h3>
+        <p>Apple の Developer ID で署名し、公証を受けています。検疫属性を外す作業は要りません。</p>
       </div>
     </div>
   </section>
 
   <!-- ---------------------------------------------------------- install -->
   <section class="sec sec-c" id="install" style="scroll-margin-top:24px">
-    <h2>Installing takes a minute.</h2>
+    <h2>導入は1分で終わります。</h2>
     <div class="grid3">
       <div class="card step">
         <span class="n">01</span>
-        <h3>Get the dmg</h3>
-        <p>Download the latest <span class="mono">Odradek_*.dmg</span> from GitHub Releases.</p>
+        <h3>dmg を落とす</h3>
+        <p>GitHub Releases から最新の <span class="mono">Odradek_*.dmg</span> をダウンロードします。</p>
       </div>
       <div class="card step">
         <span class="n">02</span>
-        <h3>Move it to Applications</h3>
-        <p>Do not launch it from the dmg. Drag the app into Applications first.</p>
+        <h3>Applications へ入れる</h3>
+        <p>dmg から直接起動しないでください。先にアプリを Applications へドラッグします。</p>
       </div>
       <div class="card step">
         <span class="n">03</span>
-        <h3>Open it</h3>
-        <p>It is notarized, so it opens on a double-click. Updates arrive from inside the app.</p>
+        <h3>開く</h3>
+        <p>公証済みなので、ダブルクリックでそのまま開きます。更新はアプリの中から届きます。</p>
       </div>
     </div>
   </section>
 
   <!-- -------------------------------------------------------------- end -->
   <section class="end">
-    <h2>The runs you forget are the ones that cost you.</h2>
-    <p class="sub">The more you run in parallel, the more quietly they slip.</p>
+    <h2>忘れたセッションほど、あとで高くつきます。</h2>
+    <p class="sub">並列で走らせるほど、取りこぼしは静かに増えます。</p>
     <div class="cta">
-      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">Download for Mac</a>
+      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">ダウンロード</a>
     </div>
-    <p class="note">macOS 26 · Apple Silicon · Free</p>
+    <p class="note">macOS 26 · Apple Silicon · 無料</p>
   </section>
 
   <footer class="foot">
     <span>Odradek</span>
-    <span>Indie project · distributed via <a href="https://github.com/insession-space/odradek-ide-releases/releases">GitHub Releases</a></span>
+    <span>個人開発 · <a href="https://github.com/insession-space/odradek-ide-releases/releases">GitHub Releases</a> で配布</span>
   </footer>
 
 </div>
