@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08090A">
 <title>Odradek — 並列で走らせて、取りこぼさない。</title>
 <meta name="description" content="Claude Code と Codex のセッションを見張って、返事待ち・停止・未コミットのものを自動で拾い上げる macOS アプリ。">
 <meta property="og:title" content="Odradek">
@@ -25,13 +26,12 @@
   --sans:"Plus Jakarta Sans","IBM Plex Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --pad:32px;
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;
-  overflow-x:clip;
-  background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
-  background-size:56px 56px}
+  overflow-x:clip}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,p,ul{margin:0}
 h1,h2,h3,p,td{word-break:auto-phrase;line-break:strict}
@@ -76,7 +76,7 @@ h1{font-weight:700;font-size:52px;line-height:1.28;letter-spacing:-.02em;margin-
 .app-body{display:flex;min-height:300px}
 .side{width:300px;border-right:1px solid var(--line);padding:8px 0;flex-shrink:0}
 .grp{padding:10px 16px 6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--faint)}
-.item{display:grid;grid-template-columns:3px 1fr auto;gap:11px;align-items:baseline;padding:10px 16px;border-top:1px solid var(--line)}
+.item{display:grid;grid-template-columns:3px minmax(0,1fr) auto;gap:11px;align-items:baseline;padding:10px 16px;border-top:1px solid var(--line)}
 .bar{width:3px;align-self:stretch;border-radius:2px}
 .it{font-size:13px}
 .is{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:3px}
@@ -100,7 +100,7 @@ h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
 
 .card{background:var(--panel);border:1px solid var(--line2);border-radius:12px}
 .rows{margin-top:40px;text-align:left;width:100%}
-.row{display:grid;grid-template-columns:230px 1fr auto;gap:28px;align-items:baseline;padding:22px 26px}
+.row{display:grid;grid-template-columns:230px minmax(0,1fr) auto;gap:28px;align-items:baseline;padding:22px 26px}
 .row+.row{border-top:1px solid var(--line)}
 .row .rt{font-weight:600;font-size:15px}
 .row .rd{font-size:14px;line-height:1.95;color:var(--muted)}
@@ -133,6 +133,57 @@ h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
   display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--faint);flex-wrap:wrap}
 .foot a{text-decoration:underline;text-underline-offset:3px}
 
+/* --------------------------------------------------------------- 磨き込み */
+/* 方眼は上に寄せて下へ抜く。全面に敷くと壁紙に見えて、ヒーローの主役が弱まる */
+.gridbg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(120% 62% at 50% 0%,#000 0%,rgba(0,0,0,.35) 55%,transparent 78%);
+          mask-image:radial-gradient(120% 62% at 50% 0%,#000 0%,rgba(0,0,0,.35) 55%,transparent 78%)}
+.wrap{position:relative;z-index:1}
+
+/* 上端に貼り付く。**罫線は下へスクロールしてから出す** — 最上部で線が入ると
+   ヒーローが箱に入って見える */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(8,9,10,.66);
+  backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);
+  border-bottom:1px solid transparent;transition:border-color .25s ease,background .25s ease}
+.topbar.stuck{border-bottom-color:var(--line);background:rgba(8,9,10,.9)}
+
+/* アプリの窓の背後に、琥珀の光を1つだけ。旧版は3つ散らしていて安っぽかった */
+.appwrap{position:relative;margin-top:56px}
+.appwrap::before{content:"";position:absolute;left:50%;top:-140px;transform:translateX(-50%);
+  width:min(880px,94%);height:300px;pointer-events:none;z-index:-1;
+  background:radial-gradient(closest-side,rgba(255,180,84,.15),transparent 72%);filter:blur(36px)}
+.app{margin-top:0}
+
+.card{transition:border-color .2s ease,background .2s ease}
+.feat:hover,.step:hover{border-color:var(--line3);background:var(--panel2)}
+.chip{transition:border-color .2s ease,color .2s ease}
+.chip:hover{border-color:var(--line3);color:var(--text)}
+.btn{transition:background .18s ease,border-color .18s ease}
+.navlinks a{transition:color .18s ease}
+
+/* 桁を揃える */
+.app-stat,.is,.ist,.tbl td:last-child,.row .rs{font-variant-numeric:tabular-nums}
+
+/* 見本に入る長いパスやコマンドは、狭い画面で折り返させる。
+   `min-width:0` が無いと flex の子は縮まず、カードごと画面から溢れる */
+.dl{min-width:0;overflow-wrap:anywhere}
+.app-stat{flex-wrap:wrap;justify-content:flex-end}
+.term{overflow-x:auto}
+
+@media (prefers-reduced-motion:reduce){
+  .card,.chip,.btn,.navlinks a,.topbar{transition:none}
+}
+/* 360px 以下の端末では、折り返しを禁じている列が最後の溢れ要因になる。
+   ここだけ nowrap を解く（それより広い画面では1行で読ませたい） */
+@media (max-width:420px){
+  .tbl td:last-child{white-space:normal}
+  .ist{white-space:normal}
+  .row .rs{white-space:normal}
+}
+
 @media (max-width:900px){
   :root{--pad:22px}
   h1{font-size:31px;line-height:1.5}
@@ -141,19 +192,21 @@ h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
   .navlinks{display:none}
   .app-body{flex-direction:column}
   .side{width:auto;border-right:0;border-bottom:1px solid var(--line)}
-  .row{grid-template-columns:1fr;gap:8px}
-  .grid2,.grid3{grid-template-columns:1fr}
+  .row{grid-template-columns:minmax(0,1fr);gap:8px}
+  .grid2,.grid3{grid-template-columns:minmax(0,1fr)}
   .sec{padding-top:76px}
   .tbl td{padding:13px 16px}
   .tbl td:first-child{width:40px;padding-right:0}
+  .feat,.step{padding:22px 20px}
+  .app-title{display:none}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="gridbg" aria-hidden="true"></div>
 
-  <nav class="nav">
+<header class="topbar"><div class="wrap"><nav class="nav">
     <a class="brand" href="/ja/"><span class="mark"></span>ODRADEK</a>
     <div class="navlinks">
       <a href="#signals">判定</a>
@@ -161,8 +214,10 @@ h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
       <a href="#install">導入</a>
       <a href="/" lang="en">EN</a>
     </div>
-    <a class="btn" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">ダウンロード</a>
-  </nav>
+    <a class="btn" href="https://github.com/insession-space/odradek-ide-releases/releases/latest"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>ダウンロード</a>
+  </nav></div></header>
+
+<div class="wrap">
 
   <!-- ------------------------------------------------------------ hero -->
   <header class="hero">
@@ -170,14 +225,14 @@ h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
     <h1>並列で走らせて、取りこぼさない。</h1>
     <p class="sub">Mac で動いている Claude Code と Codex のセッションを見張って、返事を待っているもの・止まっているもの・コミットされていないものを、静かになったことに気づく前に拾い上げます。</p>
     <div class="cta">
-      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">ダウンロード</a>
+      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>ダウンロード</a>
       <a class="btn btn-lg btn-2" href="https://github.com/insession-space/odradek-ide-releases/releases">変更履歴</a>
     </div>
     <p class="note">macOS 26 · Apple Silicon · Developer ID 署名・公証済み · 無料</p>
   </header>
 
   <!-- --------------------------------------------------------- app mock -->
-  <div class="app">
+  <div class="appwrap"><div class="app">
     <div class="app-bar">
       <span class="tl" style="background:#FF5F57"></span><span class="tl" style="background:#FEBC2E"></span><span class="tl" style="background:#28C840"></span>
       <span class="app-title">Odradek</span>
@@ -388,7 +443,7 @@ h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
     <h2>忘れたセッションほど、あとで高くつきます。</h2>
     <p class="sub">並列で走らせるほど、取りこぼしは静かに増えます。</p>
     <div class="cta">
-      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">ダウンロード</a>
+      <a class="btn btn-lg" href="https://github.com/insession-space/odradek-ide-releases/releases/latest"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>ダウンロード</a>
     </div>
     <p class="note">macOS 26 · Apple Silicon · 無料</p>
   </section>
@@ -399,5 +454,15 @@ h3{font-weight:600;font-size:16.5px;letter-spacing:-.005em}
   </footer>
 
 </div>
+<script>
+// 上端に貼り付いたときだけ罫線を出す
+(function () {
+  var bar = document.querySelector(".topbar");
+  if (!bar) return;
+  var tick = function () { bar.classList.toggle("stuck", window.scrollY > 8); };
+  tick();
+  window.addEventListener("scroll", tick, { passive: true });
+})();
+</script>
 </body>
 </html>
