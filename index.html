@@ -10,7 +10,7 @@
 <meta property="og:description" content="Ship in parallel. Miss nothing. A macOS app that watches every Claude Code and Codex session.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://odradek.insession.space/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20rx%3D%22230%22%20fill%3D%22%2326231f%22%2F%3E%3Cg%20fill%3D%22%238A857A%22%20opacity%3D%22.35%22%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3C%2Fg%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22352%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E0664B%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22492%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E8C25E%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22214%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%2388B57F%22%2F%3E%3C%2Fsvg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20rx%3D%22230%22%20fill%3D%22%23121212%22/%3E%3Cg%20transform%3D%22translate%28512%20512%29%20scale%281.06%29%20translate%28-516%20-526%29%22%3E%3Cellipse%20cx%3D%22500%22%20cy%3D%22470%22%20rx%3D%22248%22%20ry%3D%22182%22%20fill%3D%22none%22%20stroke%3D%22%23CE6B45%22%20stroke-width%3D%2262%22%20transform%3D%22rotate%28-22%20500%20470%29%22/%3E%3Cellipse%20cx%3D%22530%22%20cy%3D%22540%22%20rx%3D%22252%22%20ry%3D%22160%22%20fill%3D%22none%22%20stroke%3D%22%23E2A45E%22%20stroke-width%3D%2262%22%20transform%3D%22rotate%2831%20530%20540%29%22/%3E%3Cellipse%20cx%3D%22506%22%20cy%3D%22548%22%20rx%3D%22224%22%20ry%3D%22148%22%20fill%3D%22none%22%20stroke%3D%22%23B85A78%22%20stroke-width%3D%2258%22%20transform%3D%22rotate%2878%20506%20548%29%22/%3E%3Cellipse%20cx%3D%22542%22%20cy%3D%22498%22%20rx%3D%22190%22%20ry%3D%22126%22%20fill%3D%22none%22%20stroke%3D%22%238FA08A%22%20stroke-width%3D%2248%22%20transform%3D%22rotate%28-62%20542%20498%29%22/%3E%3Cellipse%20cx%3D%22574%22%20cy%3D%22448%22%20rx%3D%22124%22%20ry%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%236FB2AE%22%20stroke-width%3D%2242%22%20transform%3D%22rotate%2812%20574%20448%29%22/%3E%3C/g%3E%3C/svg%3E">
 <link rel="alternate" hreflang="en" href="https://odradek.insession.space/">
 <link rel="alternate" hreflang="ja" href="https://odradek.insession.space/ja/">
 <link rel="alternate" hreflang="x-default" href="https://odradek.insession.space/">
@@ -22,7 +22,8 @@
   --bg:#08090A; --panel:#0E1012; --panel2:#111417;
   --line:#191C1F; --line2:#262A2E; --line3:#333A40;
   --text:#F2F4F5; --muted:#98A0A6; --faint:#5F676D;
-  --amber:#FFB454; --urgent:#FF6B57; --ok:#4E9E76; --blue:#6BA5E8;
+  --terra:#CE6B45; --amber:#E2A45E; --wine:#B85A78; --sage:#8FA08A; --teal:#6FB2AE;
+  --urgent:#FF6B57; --ok:#4E9E76; --blue:#6BA5E8;
   --sans:"Plus Jakarta Sans","IBM Plex Sans JP","Hiragino Sans",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --pad:32px;
@@ -41,15 +42,15 @@ h1,h2,h3,p,ul{margin:0}
 /* ------------------------------------------------------------------ nav */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0;gap:16px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;letter-spacing:.01em}
-.mark{width:19px;height:19px;border:1.6px solid var(--amber);border-radius:4px;position:relative;flex-shrink:0}
-.mark::after{content:"";position:absolute;inset:5px 4px auto 4px;height:1.6px;background:var(--amber);box-shadow:0 4px 0 var(--amber)}
+.mark{width:20px;height:20px;flex-shrink:0}
+.mark svg{display:block;width:100%;height:100%}
 .navlinks{display:flex;gap:26px;font-size:13.5px;color:var(--muted)}
 .navlinks a:hover{color:var(--text)}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px;
-  padding:10px 17px;border-radius:9px;background:#fff;color:#0A0B0C;border:1px solid #fff;cursor:pointer;
-  white-space:nowrap}
-.btn:hover{background:#E9EBEC;border-color:#E9EBEC}
+  padding:10px 17px;border-radius:9px;background:linear-gradient(90deg,var(--terra),var(--amber));
+  color:#211407;border:1px solid transparent;cursor:pointer;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
 .btn-2{background:var(--panel2);color:var(--text);border:1px solid var(--line2)}
 .btn-2:hover{background:#1A1E22;border-color:var(--line3)}
 .btn-lg{font-size:15px;padding:13px 22px;border-radius:11px}
@@ -59,11 +60,22 @@ h1,h2,h3,p,ul{margin:0}
 .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 13px 6px 9px;border:1px solid var(--line2);
   border-radius:999px;background:var(--panel);font-size:12.5px;color:var(--muted)}
 .badge b{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--amber);
-  background:rgba(255,180,84,.12);border-radius:999px;padding:2px 9px}
+  background:rgba(226,164,94,.14);border-radius:999px;padding:2px 9px}
 h1{font-weight:800;font-size:62px;line-height:1.1;letter-spacing:-.035em;margin-top:26px;max-width:15ch;text-wrap:balance}
 .sub{font-size:16.5px;line-height:1.75;color:var(--muted);max-width:62ch;margin-top:20px;text-wrap:pretty}
 .cta{display:flex;gap:11px;margin-top:32px;flex-wrap:wrap;justify-content:center}
 .note{margin-top:14px;font-size:12.5px;color:var(--faint)}
+
+.mark-hero-wrap{position:relative;width:92px;height:92px}
+.hero-glow{position:absolute;left:50%;top:50%;width:520px;height:520px;transform:translate(-50%,-50%);
+  background:conic-gradient(from 0deg,var(--terra),var(--amber),var(--wine),var(--sage),var(--teal),var(--terra));
+  filter:blur(90px);opacity:.24;border-radius:50%;z-index:-1;animation:hero-glow-spin 70s linear infinite}
+.mark-hero{width:100%;height:100%;display:block}
+.mark-hero .grp{transform-box:fill-box;transform-origin:center}
+.mark-hero .back{animation:mark-spin 150s linear infinite}
+.mark-hero .front{animation:mark-spin 100s linear infinite reverse}
+@keyframes hero-glow-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes mark-spin{to{transform:rotate(360deg)}}
 
 /* ------------------------------------------------------------ app mock */
 .app{margin-top:56px;background:var(--panel);border:1px solid var(--line2);border-radius:14px;overflow:hidden;
@@ -153,7 +165,7 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 .appwrap{position:relative;margin-top:56px}
 .appwrap::before{content:"";position:absolute;left:50%;top:-140px;transform:translateX(-50%);
   width:min(880px,94%);height:300px;pointer-events:none;z-index:-1;
-  background:radial-gradient(closest-side,rgba(255,180,84,.15),transparent 72%);filter:blur(36px)}
+  background:radial-gradient(closest-side,rgba(206,107,69,.16),transparent 72%);filter:blur(36px)}
 .app{margin-top:0}
 
 .card{transition:border-color .2s ease,background .2s ease}
@@ -174,6 +186,7 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 
 @media (prefers-reduced-motion:reduce){
   .card,.chip,.btn,.navlinks a,.topbar{transition:none}
+  .hero-glow,.mark-hero .back,.mark-hero .front{animation:none}
 }
 /* 360px 以下の端末では、折り返しを禁じている列が最後の溢れ要因になる。
    ここだけ nowrap を解く（それより広い画面では1行で読ませたい） */
@@ -206,7 +219,7 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 <div class="gridbg" aria-hidden="true"></div>
 
 <header class="topbar"><div class="wrap"><nav class="nav">
-    <a class="brand" href="/"><span class="mark"></span>ODRADEK</a>
+    <a class="brand" href="/"><span class="mark"><svg viewBox="0 0 1024 1024" aria-hidden="true"><g transform="translate(512 512) scale(1.06) translate(-516 -526)"><ellipse cx="500" cy="470" rx="248" ry="182" fill="none" stroke="#CE6B45" stroke-width="62" transform="rotate(-22 500 470)"/><ellipse cx="530" cy="540" rx="252" ry="160" fill="none" stroke="#E2A45E" stroke-width="62" transform="rotate(31 530 540)"/><ellipse cx="506" cy="548" rx="224" ry="148" fill="none" stroke="#B85A78" stroke-width="58" transform="rotate(78 506 548)"/><ellipse cx="542" cy="498" rx="190" ry="126" fill="none" stroke="#8FA08A" stroke-width="48" transform="rotate(-62 542 498)"/><ellipse cx="574" cy="448" rx="124" ry="92" fill="none" stroke="#6FB2AE" stroke-width="42" transform="rotate(12 574 448)"/></g></svg></span>ODRADEK</a>
     <div class="navlinks">
       <a href="#signals">Signals</a>
       <a href="#features">Features</a>
@@ -220,6 +233,7 @@ h3{font-weight:600;font-size:17px;letter-spacing:-.01em}
 
   <!-- ------------------------------------------------------------ hero -->
   <header class="hero">
+    <div class="mark-hero-wrap"><div class="hero-glow" aria-hidden="true"></div><svg class="mark-hero" viewBox="0 0 1024 1024" aria-hidden="true"><g class="grp back"><ellipse cx="500" cy="470" rx="248" ry="182" fill="none" stroke="#CE6B45" stroke-width="62" transform="rotate(-22 500 470)"/><ellipse cx="530" cy="540" rx="252" ry="160" fill="none" stroke="#E2A45E" stroke-width="62" transform="rotate(31 530 540)"/></g><g class="grp front"><ellipse cx="506" cy="548" rx="224" ry="148" fill="none" stroke="#B85A78" stroke-width="58" transform="rotate(78 506 548)"/><ellipse cx="542" cy="498" rx="190" ry="126" fill="none" stroke="#8FA08A" stroke-width="48" transform="rotate(-62 542 498)"/><ellipse cx="574" cy="448" rx="124" ry="92" fill="none" stroke="#6FB2AE" stroke-width="42" transform="rotate(12 574 448)"/></g></svg></div>
     <span class="badge">Built for <b>Claude Code · Codex</b></span>
     <h1>Ship in parallel. Miss nothing.</h1>
     <p class="sub">Odradek watches every Claude Code and Codex session on your Mac and surfaces the ones waiting on you, stalled, or sitting on uncommitted work — before you notice they went quiet.</p>
