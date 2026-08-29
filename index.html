@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Session Desk — 走らせたエージェントを、取りこぼさない。</title>
+<title>Odradek — 走らせたエージェントを、取りこぼさない。</title>
 <meta name="description" content="Claude Code と Codex のセッションを1枚の台帳に並べ、返事待ち・停止・未コミットを自動で拾い上げる macOS アプリ。気づいたその場で端末に入って、続きをやる。">
-<meta property="og:title" content="Session Desk">
+<meta property="og:title" content="Odradek">
 <meta property="og:description" content="走らせたエージェントを、取りこぼさない。Claude Code と Codex のセッションを見張る macOS アプリ。">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://session-desk.insession.space/">
+<meta property="og:url" content="https://odradek.insession.space/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20rx%3D%22230%22%20fill%3D%22%2326231f%22%2F%3E%3Cg%20fill%3D%22%238A857A%22%20opacity%3D%22.35%22%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3C%2Fg%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22352%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E0664B%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22492%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E8C25E%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22214%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%2388B57F%22%2F%3E%3C%2Fsvg%3E">
-<link rel="alternate" hreflang="ja" href="https://session-desk.insession.space/">
-<link rel="alternate" hreflang="en" href="https://session-desk.insession.space/en/">
-<link rel="alternate" hreflang="x-default" href="https://session-desk.insession.space/">
+<link rel="alternate" hreflang="ja" href="https://odradek.insession.space/">
+<link rel="alternate" hreflang="en" href="https://odradek.insession.space/en/">
+<link rel="alternate" hreflang="x-default" href="https://odradek.insession.space/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -136,7 +136,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             <rect x="232" y="450" width="492" height="124" rx="62" fill="#E8C25E"/>
             <rect x="232" y="618" width="214" height="124" rx="62" fill="#88B57F"/>
           </svg>
-          <span style="font-size:15.5px;font-weight:600">Session Desk</span>
+          <span style="font-size:15.5px;font-weight:600">Odradek</span>
         </div>
         <div style="display:flex;align-items:center;gap:30px;font-size:14px;color:var(--muted)">
           <span class="nav-links">
@@ -145,7 +145,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             <a href="#install" style="color:var(--muted)">導入</a>
           </span>
           <a href="/en/" lang="en" style="color:var(--muted);font-family:var(--mono);font-size:12.5px;letter-spacing:.08em">EN</a>
-          <a class="btn btn-sm" href="https://github.com/insession-space/session-desk-releases/releases/latest">ダウンロード</a>
+          <a class="btn btn-sm" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">ダウンロード</a>
         </div>
       </div>
     </div>
@@ -157,11 +157,11 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
         <h1 style="font-size:40px;line-height:1.6">走らせたエージェントを、<br>取りこぼさない。</h1>
         <p class="lead">Claude Code と Codex のセッションを1枚の台帳に並べ、<span style="color:var(--text);white-space:nowrap">返事待ち・停止・未コミット</span>を自動で拾い上げる。気づいたその場で端末に入って、続きをやる。</p>
         <div style="display:flex;align-items:center;gap:14px;margin-top:6px;flex-wrap:wrap">
-          <a class="btn" href="https://github.com/insession-space/session-desk-releases/releases/latest">
+          <a class="btn" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
             ダウンロード
           </a>
-          <a class="btn-ghost" href="https://github.com/insession-space/session-desk-releases/releases/latest">リリースノート</a>
+          <a class="btn-ghost" href="https://github.com/insession-space/odradek-ide-releases/releases/latest">リリースノート</a>
         </div>
         <div style="display:flex;align-items:flex-start;gap:9px;color:var(--faint);font-size:13px;line-height:1.7">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:3px"><path d="M12 3 4 6.5v5c0 4.6 3.2 8.4 8 9.5 4.8-1.1 8-4.9 8-9.5v-5Z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -176,7 +176,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             <div style="width:11px;height:11px;border-radius:50%;background:#febc2e"></div>
             <div style="width:11px;height:11px;border-radius:50%;background:#28c840"></div>
           </div>
-          <div style="flex-grow:1;text-align:center;font-size:12px;color:var(--muted)">Session Desk</div>
+          <div style="flex-grow:1;text-align:center;font-size:12px;color:var(--muted)">Odradek</div>
           <div class="mono" style="font-size:11px;display:flex;gap:9px">
             <span style="color:var(--urgent)">⚠2</span><span style="color:var(--info)">▶4</span><span style="color:var(--ok)">✓1</span>
           </div>
@@ -184,7 +184,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
         <div class="app-body" style="display:flex;height:392px">
           <div class="app-list" style="width:272px;border-right:1px solid rgba(255,255,255,.09);padding:14px 12px;display:flex;flex-direction:column;gap:8px">
             <div style="padding:2px 8px 4px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);letter-spacing:.08em">
-              <div style="width:7px;height:7px;border-radius:3px;background:#7fb2f0"></div>session-desk
+              <div style="width:7px;height:7px;border-radius:3px;background:#7fb2f0"></div>odradek-ide
             </div>
             <div style="padding:11px 13px;border-radius:14px;background:linear-gradient(140deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.30);display:flex;flex-direction:column;gap:5px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;font-weight:500">LP のプロンプトを作る</span><span class="mono" style="font-size:10.5px;color:var(--urgent);white-space:nowrap">返事待ち</span></div>
@@ -288,7 +288,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
         </div>
         <div class="glass mock terminal-split" style="height:240px;display:flex">
           <div style="flex-grow:1;border-right:1px solid rgba(255,255,255,.09);padding:16px 18px;min-width:0" class="mono">
-            <div style="font-size:10.5px;color:var(--faint);margin-bottom:9px">ペイン 1 · session-desk</div>
+            <div style="font-size:10.5px;color:var(--faint);margin-bottom:9px">ペイン 1 · odradek-ide</div>
             <div style="font-size:11px;color:var(--muted);line-height:1.85">
               <div><span style="color:var(--ok)">●</span> swift build … 完了</div>
               <div><span style="color:var(--info)">●</span> テストを走らせている</div>
@@ -318,7 +318,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/><path d="m17 17 2 2 3-4"/></svg>
             <h3 style="font-size:21px">タスクの台帳</h3>
           </div>
-          <p class="lead">「何をやるつもりか」はジョブ側のどこにも書かれていない。だから Session Desk が持つ。更新順の1本の一覧で、タスクからセッションを起こし、走らせたジョブを並べて紐づけておける。</p>
+          <p class="lead">「何をやるつもりか」はジョブ側のどこにも書かれていない。だから Odradek が持つ。更新順の1本の一覧で、タスクからセッションを起こし、走らせたジョブを並べて紐づけておける。</p>
         </div>
         <div class="glass mock" style="height:268px">
           <div style="display:flex;gap:8px;padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.09);flex-wrap:wrap">
@@ -328,7 +328,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             <span style="font-size:11.5px;padding:5px 13px;border-radius:999px;color:var(--faint)">完了</span>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.07)">
-            <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:13.5px">LP のデザイン方向を決める</span><span style="font-size:11px;color:var(--faint)">セッション 2本 · ~/private-work/session-desk</span></div>
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:13.5px">LP のデザイン方向を決める</span><span style="font-size:11px;color:var(--faint)">セッション 2本 · ~/private-work/odradek-ide</span></div>
             <span class="mono" style="font-size:11px;color:var(--info);white-space:nowrap">進行中</span>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.07)">
@@ -405,12 +405,6 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
           <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--warn)"></span><span class="mono">M swift/Sources/Widget/WidgetView.swift</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span><span class="mono">A swift/Tests/WidgetTests.swift</span></div></div>
         </div>
         <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M12 4v16"/><circle cx="12" cy="12" r="8"/></svg>
-          <h3 style="font-size:17px">MCP と HTTP クライアント</h3>
-          <p style="font-size:14px;line-height:1.95;color:var(--muted)">SessionDeskMCP を同梱していて、設定から登録できる。リポジトリに openapi があればエンドポイントが一覧に出て、その場で叩いて履歴も残る。</p>
-          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span><span class="mono">GET /api/sessions · 200 · 41ms</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span><span class="mono">POST /api/tasks · 201 · 88ms</span></div></div>
-        </div>
-        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4Z"/><path d="M4 10h16"/><path d="M9 10v9"/></svg>
           <h3 style="font-size:17px">リポジトリとスキル</h3>
           <p style="font-size:14px;line-height:1.95;color:var(--muted)">org のロゴと色で分かれたリポジトリの一覧。詳細の「スキル」タブに <span class="mono" style="font-size:13px">.claude/skills</span> が並び、押すとそのスキルを選んだ状態で新しいセッションを起こせる。</p>
@@ -447,7 +441,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
         <div class="glass" style="padding:30px;display:flex;flex-direction:column;gap:12px">
           <div class="mono" style="font-size:13px;color:var(--accent)">01</div>
           <h3 style="font-size:18px">dmg を落とす</h3>
-          <p style="font-size:14px;line-height:1.95;color:var(--muted)">GitHub Releases から最新の <span class="mono" style="font-size:13px">SessionDesk_*.dmg</span> をダウンロードする。</p>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">GitHub Releases から最新の <span class="mono" style="font-size:13px">Odradek_*.dmg</span> をダウンロードする。</p>
         </div>
         <div class="glass" style="padding:30px;display:flex;flex-direction:column;gap:12px">
           <div class="mono" style="font-size:13px;color:var(--accent)">02</div>
@@ -467,7 +461,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
       <div class="glass cta-block" style="padding:76px 48px;display:flex;flex-direction:column;align-items:center;gap:26px">
         <h2 style="font-size:32px;line-height:1.55;text-align:center">まず1日、置いておくところから。</h2>
         <p class="lead" style="text-align:center;max-width:560px">並列で回している人ほど、取りこぼしは静かに増える。</p>
-        <a class="btn" href="https://github.com/insession-space/session-desk-releases/releases/latest" style="margin-top:6px">
+        <a class="btn" href="https://github.com/insession-space/odradek-ide-releases/releases/latest" style="margin-top:6px">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
           ダウンロード
         </a>
@@ -476,8 +470,8 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
     </div>
 
     <div class="footer" style="padding:0 var(--pad) 44px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--faint);gap:12px">
-      <span>Session Desk</span>
-      <span>個人開発 · <a href="https://github.com/insession-space/session-desk-releases/releases" style="color:var(--faint);text-decoration:underline;text-underline-offset:3px">GitHub Releases</a> で配布</span>
+      <span>Odradek</span>
+      <span>個人開発 · <a href="https://github.com/insession-space/odradek-ide-releases/releases" style="color:var(--faint);text-decoration:underline;text-underline-offset:3px">GitHub Releases</a> で配布</span>
     </div>
 
   </div>
