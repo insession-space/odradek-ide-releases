@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Session Desk — 走らせたエージェントを、取りこぼさない。</title>
-<meta name="description" content="Claude Code のバックグラウンドジョブを1枚の台帳に並べ、返事待ち・停止・未コミットを自動で拾い上げる macOS アプリ。気づいたその場で端末に入って、続きをやる。">
+<meta name="description" content="Claude Code と Codex のセッションを1枚の台帳に並べ、返事待ち・停止・未コミットを自動で拾い上げる macOS アプリ。気づいたその場で端末に入って、続きをやる。">
 <meta property="og:title" content="Session Desk">
-<meta property="og:description" content="走らせたエージェントを、取りこぼさない。Claude Code のバックグラウンドジョブを見張る macOS アプリ。">
+<meta property="og:description" content="走らせたエージェントを、取りこぼさない。Claude Code と Codex のセッションを見張る macOS アプリ。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://session-desk.insession.space/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20rx%3D%22230%22%20fill%3D%22%2326231f%22%2F%3E%3Cg%20fill%3D%22%238A857A%22%20opacity%3D%22.35%22%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22560%22%20height%3D%22124%22%20rx%3D%2262%22%2F%3E%3C%2Fg%3E%3Crect%20x%3D%22232%22%20y%3D%22282%22%20width%3D%22352%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E0664B%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22450%22%20width%3D%22492%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%23E8C25E%22%2F%3E%3Crect%20x%3D%22232%22%20y%3D%22618%22%20width%3D%22214%22%20height%3D%22124%22%20rx%3D%2262%22%20fill%3D%22%2388B57F%22%2F%3E%3C%2Fsvg%3E">
@@ -25,7 +25,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
 a{color:var(--accent);text-decoration:none}
 a:hover{color:#ffcd8a}
 h1,h2,h3,p,ul{margin:0}
@@ -35,7 +35,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
 .eyebrow{font-size:12.5px;letter-spacing:.16em;color:var(--faint);font-family:var(--mono);text-transform:uppercase}
 .lead{font-size:15.5px;line-height:1.95;color:var(--muted)}
 .sec-title{font-size:30px;line-height:1.6}
-.wrap{position:relative;max-width:1440px;margin:0 auto}
+.wrap{position:relative;max-width:1440px;margin:0 auto;overflow:clip}
 .glass{
   background:linear-gradient(165deg,rgba(255,255,255,.062),rgba(255,255,255,.028) 46%,rgba(255,255,255,.04));
   backdrop-filter:blur(30px) saturate(140%);-webkit-backdrop-filter:blur(30px) saturate(140%);
@@ -148,9 +148,9 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
     <!-- hero -->
     <div class="hero" style="padding:84px var(--pad) 92px;display:flex;gap:56px;align-items:center">
       <div class="copy" style="width:560px;display:flex;flex-direction:column;gap:26px">
-        <div class="eyebrow">macOS · Apple Silicon · v1.9.0</div>
+        <div class="eyebrow">macOS · Apple Silicon</div>
         <h1 style="font-size:40px;line-height:1.6">走らせたエージェントを、<br>取りこぼさない。</h1>
-        <p class="lead">Claude Code のバックグラウンドジョブを1枚の台帳に並べ、<span style="color:var(--text);white-space:nowrap">返事待ち・停止・未コミット</span>を自動で拾い上げる。気づいたその場で端末に入って、続きをやる。</p>
+        <p class="lead">Claude Code と Codex のセッションを1枚の台帳に並べ、<span style="color:var(--text);white-space:nowrap">返事待ち・停止・未コミット</span>を自動で拾い上げる。気づいたその場で端末に入って、続きをやる。</p>
         <div style="display:flex;align-items:center;gap:14px;margin-top:6px;flex-wrap:wrap">
           <a class="btn" href="https://github.com/insession-space/session-desk-releases/releases/latest">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
@@ -183,11 +183,11 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             </div>
             <div style="padding:11px 13px;border-radius:14px;background:linear-gradient(140deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.30);display:flex;flex-direction:column;gap:5px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;font-weight:500">LP のプロンプトを作る</span><span class="mono" style="font-size:10.5px;color:var(--urgent);white-space:nowrap">返事待ち</span></div>
-              <div style="font-size:11px;color:var(--faint)">アートボードの構成を確認中 · 3分前</div>
+              <div style="font-size:11px;color:var(--faint)"><span class="mono">AskUserQuestion</span> · 3分前</div>
             </div>
             <div style="padding:11px 13px;display:flex;flex-direction:column;gap:5px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;color:var(--muted)">ウィジェットの表示を直す</span><span class="mono" style="font-size:10.5px;color:var(--warn);white-space:nowrap">未コミット</span></div>
-              <div style="font-size:11px;color:var(--faint)">スナップショットを書き出した · 18分前</div>
+              <div style="font-size:11px;color:var(--faint)"><span class="mono">Edit: WidgetView.swift</span> · 18分前</div>
             </div>
             <div style="padding:2px 8px 4px;margin-top:6px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);letter-spacing:.08em">
               <div style="width:7px;height:7px;border-radius:3px;background:#7ee2a8"></div>insession-app
@@ -198,7 +198,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             </div>
             <div style="padding:11px 13px;display:flex;flex-direction:column;gap:5px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-size:12.5px;color:var(--muted)">同期のスモークテスト</span><span class="mono" style="font-size:10.5px;color:var(--faint);white-space:nowrap">稼働中</span></div>
-              <div style="font-size:11px;color:var(--faint)">ws クライアントを2本繋いだ · たった今</div>
+              <div style="font-size:11px;color:var(--faint)"><span class="mono">Bash: node ws-smoke.mjs</span> · たった今</div>
             </div>
           </div>
           <div class="mono" style="flex-grow:1;padding:16px 18px;display:flex;flex-direction:column;gap:8px;background:rgba(6,9,13,.55);min-width:0;overflow:hidden">
@@ -245,7 +245,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
       <div class="copy" style="width:400px;display:flex;flex-direction:column;gap:18px;padding-top:10px;flex-shrink:0">
         <div class="eyebrow">やり忘れの判定</div>
         <h2 class="sec-title">「見ればわかる」を、<br>アプリ側に持たせた。</h2>
-        <p class="lead">一覧を眺めて自分で判断する必要はない。拾うべきものだけが重さ付きで浮かび上がる。判定のルールは1か所にまとまっていて、色は状態を指すときだけ使う。</p>
+        <p class="lead">一覧を眺めて自分で判断する必要はない。拾うべきものだけが重さ付きで浮かび上がり、要対応になった瞬間に macOS の通知が出る。判定のルールは1か所にまとまっていて、色は状態を指すときだけ使う。</p>
         <div style="display:flex;gap:18px;margin-top:6px;font-size:12.5px;color:var(--muted)">
           <span style="display:flex;align-items:center;gap:7px"><span class="dot" style="background:var(--urgent)"></span>今すぐ</span>
           <span style="display:flex;align-items:center;gap:7px"><span class="dot" style="background:var(--warn)"></span>注意</span>
@@ -340,11 +340,12 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
       <div class="grid3">
         <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="6" r="2.5"/><circle cx="7" cy="18" r="2.5"/><path d="M7 8.5v7"/><circle cx="17" cy="6" r="2.5"/><path d="M17 8.5v4a3 3 0 0 1-3 3h-3"/></svg>
-          <h3 style="font-size:17px">レビュー待ち</h3>
-          <p style="font-size:14px;line-height:1.95;color:var(--muted)">自分がレビュアーの open な PR を、朝いちばんに開く画面に出す。滞留したまま忘れる方の落ち方も拾う。</p>
-          <div style="display:flex;flex-direction:column;gap:9px;margin-top:4px">
-            <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)"><span class="dot" style="width:7px;height:7px;background:var(--ok)"></span>#284 設定タブの撮影に対応する</div>
-            <div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)"><span class="dot" style="width:7px;height:7px;background:var(--faint)"></span>#279 タスクの一覧を1本にする</div>
+          <h3 style="font-size:17px">レヴュー盤面</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">レビュー依頼と自分の PR を、サイドバーの「レヴュー」に3列の盤面で。カードを押すと GitHub で開く。滞留したまま忘れる方の落ち方も拾う。</p>
+          <div class="kanban" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:4px;font-size:10.5px">
+            <div class="glass-soft" style="padding:8px;display:flex;flex-direction:column;gap:6px"><div style="color:var(--faint);letter-spacing:.06em">未レヴュー</div><div style="padding:6px 7px;border-radius:7px;background:rgba(255,255,255,.07)">#417 追従</div><div style="padding:6px 7px;border-radius:7px;background:rgba(255,255,255,.07)">#412 盤面</div></div>
+            <div class="glass-soft" style="padding:8px;display:flex;flex-direction:column;gap:6px"><div style="color:var(--faint);letter-spacing:.06em">レヴュー中</div><div style="padding:6px 7px;border-radius:7px;background:rgba(255,255,255,.07)">#409 通知</div></div>
+            <div class="glass-soft" style="padding:8px;display:flex;flex-direction:column;gap:6px"><div style="color:var(--faint);letter-spacing:.06em">承認済み</div><div style="padding:6px 7px;border-radius:7px;background:rgba(255,255,255,.07);color:var(--ok)">#404 差分</div></div>
           </div>
         </div>
         <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
@@ -370,6 +371,45 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
             <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span class="dot" style="width:6px;height:6px;background:var(--urgent)"></span><span>返事待ち · LP のプロンプト</span></div>
             <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--warn)"></span><span>未コミット · ウィジェット修正</span></div>
           </div>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v2"/><path d="M6.5 10a5.5 5.5 0 0 1 11 0v3l1.5 3h-14l1.5-3Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
+          <h3 style="font-size:17px">要対応の通知</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">返事待ち・止まった・終わったまま放置になった瞬間に macOS の通知を出す。バナーを押すとそのセッションが開いた状態で本体が立ち上がる。</p>
+          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--urgent)"></span><span>返事待ち · LP のプロンプトを作る</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--warn)"></span><span>15分 更新なし · 同期のスモークテスト</span></div></div>
+        </div>
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h7"/><circle cx="18" cy="15" r="3"/></svg>
+          <h3 style="font-size:17px">今の手が見える</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">一覧の行に、そのセッションが今なにをしているかを出す。質問で止まっていれば何を聞かれているかもカードで読める。端末を開かなくても中が分かる。</p>
+          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--info)"></span><span class="mono">Bash: swift build</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--info)"></span><span class="mono">Edit: SettingsView.swift</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--accent)"></span><span>? この方針で進めますか</span></div></div>
+        </div>
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg>
+          <h3 style="font-size:17px">エージェントとモデルを選んで起こす</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">Claude Code と Codex のどちらで、どのモデルで走らせるかを起動時に選ぶ。よく使うスキルは「既定スキル」にしておくと最初から入っている。</p>
+          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span><span>Claude Code · claude-fable-5</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--faint)"></span><span>Codex · gpt-5</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--faint)"></span><span>既定スキル: ship-session</span></div></div>
+        </div>
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h9l5 5v11H5Z"/><path d="M14 4v5h5"/><path d="M9 14h6"/><path d="M9 17h6"/></svg>
+          <h3 style="font-size:17px">未コミット差分を読む</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">worktree に残っている差分を、端末に入らずに読む。変更ファイルのツリーと折りたたみ付きで、片付ける前に何が書かれたかを確かめられる。</p>
+          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--warn)"></span><span class="mono">M swift/Sources/Widget/WidgetView.swift</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span><span class="mono">A swift/Tests/WidgetTests.swift</span></div></div>
+        </div>
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M12 4v16"/><circle cx="12" cy="12" r="8"/></svg>
+          <h3 style="font-size:17px">MCP と HTTP クライアント</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">SessionDeskMCP を同梱していて、設定から登録できる。リポジトリに openapi があればエンドポイントが一覧に出て、その場で叩いて履歴も残る。</p>
+          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span><span class="mono">GET /api/sessions · 200 · 41ms</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--ok)"></span><span class="mono">POST /api/tasks · 201 · 88ms</span></div></div>
+        </div>
+        <div class="glass" style="padding:28px;display:flex;flex-direction:column;gap:14px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4Z"/><path d="M4 10h16"/><path d="M9 10v9"/></svg>
+          <h3 style="font-size:17px">リポジトリとスキル</h3>
+          <p style="font-size:14px;line-height:1.95;color:var(--muted)">org のロゴと色で分かれたリポジトリの一覧。詳細の「スキル」タブに <span class="mono" style="font-size:13px">.claude/skills</span> が並び、押すとそのスキルを選んだ状態で新しいセッションを起こせる。</p>
+          <div class="glass-soft" style="padding:14px;display:flex;flex-direction:column;gap:9px;margin-top:4px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--info)"></span><span>ship-session · 要望を Issue にして緑まで</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><span class="dot" style="width:6px;height:6px;background:var(--info)"></span><span>release · changeset から公開まで</span></div></div>
         </div>
       </div>
     </div>
@@ -426,7 +466,7 @@ h1,h2,h3,p,li,td,th{word-break:auto-phrase;line-break:strict}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
           ダウンロード
         </a>
-        <div class="mono" style="font-size:12.5px;color:var(--faint);text-align:center">v1.9.0 · macOS (Apple Silicon) · 無料</div>
+        <div class="mono" style="font-size:12.5px;color:var(--faint);text-align:center">macOS (Apple Silicon) · 無料</div>
       </div>
     </div>
 
